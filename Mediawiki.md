@@ -1,3 +1,13 @@
+---
+title: Mediawiki
+description: 
+published: true
+date: 2026-03-16T13:56:58.904Z
+tags: docker
+editor: markdown
+dateCreated: 2026-03-16T13:51:37.465Z
+---
+
 ## Introduction
 
 This will show you how you can run MediaWiki on Docker.
@@ -106,7 +116,15 @@ dumpgenerator --api https://wiki.rueti16.com/api.php --xml --images
 ## Convert markdown to mediawiki {#convert_markdown_to_mediawiki}
 
 ``` bash
-pandoc -f markdown -t mediawiki test.md -o test.wiki
+pandoc test.md -f markdown -t mediawiki test.md -o test.wiki
+```
+## Convert mediawiki to markdown
+``` bash
+pandoc input.mediawiki -f mediawiki -t markdown -o output.md
+```
+``` bash
+for f in *.mediawiki; do
+  pandoc "$f" -f mediawiki -t markdown -o "${f%.mediawiki}.md"
+done
 ```
 
-[index.php?title=Category:Docker](index.php?title=Category:Docker "index.php?title=Category:Docker"){.wikilink}
