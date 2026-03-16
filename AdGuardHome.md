@@ -1,3 +1,13 @@
+---
+title: AdGuardHome
+description: 
+published: true
+date: 2026-03-16T22:21:25.827Z
+tags: dns, linux
+editor: markdown
+dateCreated: 2026-03-16T13:50:13.451Z
+---
+
 ![AdGuard Logo](AdGuard_Logo.png "AdGuard Logo") AdGuard Home[^1][^2] is
 a way of keeping your browser experience pleasant and to protect you
 from unwanted trackers.
@@ -57,9 +67,6 @@ sudo /opt/AdGuardHome/AdGuardHome -s start|stop|restart|status|install|uninstall
 tbd
 
 <references />
-
-[Category:Linux](Category:Linux "Category:Linux"){.wikilink}
-[Category:DNS](Category:DNS "Category:DNS"){.wikilink}
 
 [^1]: <https://github.com/AdguardTeam/AdguardHome>
 
