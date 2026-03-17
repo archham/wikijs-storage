@@ -2,7 +2,7 @@
 title: Fedora
 description: 
 published: true
-date: 2026-03-17T16:11:12.667Z
+date: 2026-03-17T16:41:42.391Z
 tags: linux, fedora, flatpak
 editor: markdown
 dateCreated: 2026-03-16T13:50:41.573Z
@@ -10,16 +10,16 @@ dateCreated: 2026-03-16T13:50:41.573Z
 
 Knowledge Base for Fedora
 
-## Fedora 43 Kinoite {#fedora_43_kinoite}
+## Fedora 43 Kinoite
 
-### Custom system-wide CA {#custom_system_wide_ca}
+### Custom system-wide CA
 
 ``` bash
 sudo cp my-root-cert.crt /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust extract
 ```
 
-### Hypervisor: Use qemu & kvm {#hypervisor_use_qemu_kvm}
+### Hypervisor: Use qemu & kvm
 
 ``` bash
 # 1) Create new deployment with virtualization and Windows 11 prerequisites
@@ -67,7 +67,7 @@ Deployments:
 
 ## Flatpak
 
-### Flatpak Access to Host Certificate Store {#flatpak_access_to_host_certificate_store}
+### Flatpak Access to Host Certificate Store
 
 ``` bash
 flatpak override --user \
@@ -76,28 +76,17 @@ flatpak override --user \
   com.devolutions.remotedesktopmanager
 ```
 
-#### Reason
+**Problem**: Flatpak apps are sandboxed and don't automatically trust custom CA certs installed on the host (`/etc/pki/ca-trust`). This causes SSL errors when connecting to services using internal/self-signed certs.
 
-**Problem**: Flatpak apps are sandboxed and don't automatically trust
-custom CA certs installed on the host (`/etc/pki/ca-trust`). This causes
-SSL errors when connecting to services using internal/self-signed certs.
-
-- `host-etc:ro`: gives **read-only access** to host's `/etc` inside
-  sandbox.
-
-<!-- -->
-
-- `SSL_CERT_FILE=...`: tells OpenSSL inside the Flatpak to use **host's
-  trusted CA bundle**, which includes your custom certs.
+- `host-etc:ro`: gives **read-only access** to host's `/etc` inside sandbox.
+- `SSL_CERT_FILE=...`: tells OpenSSL inside the Flatpak to use **host's trusted CA bundle**, which includes your custom certs.
 
 **Why this is best practice**:
 
 - **No modification of the immutable OS** (Fedora Kinoite stays clean).
 - **Persists across updates** (applies via Flatpak's override system).
-- **Minimal and secure**: only read-only access to certs, limited to the
-  app that needs it.
+- **Minimal and secure**: only read-only access to certs, limited to the app that needs it.
 - Avoids bundling certs inside Flatpaks or using insecure workarounds.
 - Works cleanly with standard Flatpak features.
 
-This is a secure, update-proof way to let Flatpak apps trust your
-internal certs---sandbox integrity stays intact.
+This is a secure, update-proof way to let Flatpak apps trust your internal certs---sandbox integrity stays intact.
