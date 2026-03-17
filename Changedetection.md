@@ -2,17 +2,17 @@
 title: Changedetection
 description: 
 published: true
-date: 2026-03-17T16:47:05.689Z
+date: 2026-03-17T17:02:19.299Z
 tags: docker
 editor: markdown
 dateCreated: 2026-03-16T13:50:27.590Z
 ---
 
-## Introduction
+# Introduction
 
-Changedetection.io is a usefull tool to track changes in websites. For example software versions, etc.
+Changedetection.io[^1] is a usefull tool to track changes in websites. For example software versions, etc.
 
-## Setup with Docker compose
+# Setup with Docker compose
 
 ``` yaml
 # cat changedetection.io/docker-compose.yml 
@@ -164,3 +164,4 @@ find $BACKUP_DIR -type f -name 'changedetection_*.tar.gz' | sort | head -n -${GE
 # List backups
 ls -l $BACKUP_DIR
 ```
+[^1]: <https://changedetection.io/>
