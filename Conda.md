@@ -2,7 +2,7 @@
 title: Conda
 description: 
 published: true
-date: 2026-03-17T16:05:03.082Z
+date: 2026-03-17T16:05:58.599Z
 tags: conda, anaconda, python
 editor: markdown
 dateCreated: 2026-03-16T13:50:32.086Z
@@ -11,7 +11,7 @@ dateCreated: 2026-03-16T13:50:32.086Z
 ## Introduction
 
 Conda is a powerful command line tool for package and environment
-management that runs on Windows, macOS, and Linux.[^1]
+management that runs on Windows, macOS, and Linux.[^1] 
 
 This page is for general info, how to install and use it.
 
