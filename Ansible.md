@@ -2,7 +2,7 @@
 title: Ansible
 description: 
 published: true
-date: 2026-03-17T16:55:34.523Z
+date: 2026-03-17T16:57:47.793Z
 tags: ansible
 editor: markdown
 dateCreated: 2026-03-16T13:50:18.538Z
@@ -375,7 +375,7 @@ ansible servera -m ping #ping servera via ansible
 * In this tutorial, we\'re going to use one of Ansible\'s most complete example playbooks as a template: lamp_haproxy[^2]
 * Manage HAProxy / Nginx / Apache from Web Interface using Roxy-WI[^3]
 * Ansible-navigator build your own execution enviroment![^4]
-## References
+
 [^1]: <https://www.bogotobogo.com/DevOps/Ansible/Ansible-Playbook-Lamp-HAProxy.php>
 [^2]: <https://www.qnap.com/en/how-to/tutorial/article/how-to-use-reverse-proxy-to-improve-secure-remote-connections>
 [^3]: <https://computingforgeeks.com/manage-haproxy-nginx-apache-from-web-interface-using-roxy-wi/?expand_article=1>
