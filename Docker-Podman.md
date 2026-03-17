@@ -2,7 +2,7 @@
 title: Docker-Podman
 description: 
 published: true
-date: 2026-03-17T16:06:40.103Z
+date: 2026-03-17T16:35:57.989Z
 tags: docker, podman, container
 editor: markdown
 dateCreated: 2026-03-16T13:50:36.723Z
@@ -50,8 +50,7 @@ docker exec -it c4d3132c4212 bash
 
 ## Compose
 
-Docker compose is a very useful method to run one or more containers
-repeatedly in a controlled manner even with dependencies.
+Docker compose is a very useful method to run one or more containers repeatedly in a controlled manner even with dependencies.
 
 ### Options
 
@@ -59,34 +58,19 @@ There are many possible options that you can add.
 
 #### Selinux
 
-If you use `selinux` you can add the `z` or `Z` options to modify the
-selinux label of the host file or directory being mounted into the
-container. This affects the file or directory on the host machine itself
-and can have consequences outside of the scope of Docker.
+If you use `selinux` you can add the `z` or `Z` options to modify the selinux label of the host file or directory being mounted into the container. This affects the file or directory on the host machine itself and can have consequences outside of the scope of Docker.
 
-- The `z` option indicates that the bind mount content is shared among
-  multiple containers.
-- The `Z` option indicates that the bind mount content is private and
-  unshared.
+- The `z` option indicates that the bind mount content is shared among multiple containers.
+- The `Z` option indicates that the bind mount content is private and unshared.
 
-Use extreme caution with these options. Bind-mounting a system directory
-such as `/home` or `/usr` with the `Z` option renders your host machine
-inoperable and you may need to relabel the host machine files by hand.
+Use extreme caution with these options. Bind-mounting a system directory such as `/home` or `/usr` with the `Z` option renders your host machine inoperable and you may need to relabel the host machine files by hand.
 
-> Important
->
 > When using bind mounts with services, selinux labels (`:Z` and `:z`),
-> as well as `:ro` are ignored. See [moby/moby
-> #32579](https://github.com/moby/moby/issues/32579) for details.
+> as well as `:ro` are ignored. See [moby/moby #32579](https://github.com/moby/moby/issues/32579) for details.
 
-This example sets the `z` option to specify that multiple containers can
-share the bind mount\'s contents:
+This example sets the `z` option to specify that multiple containers can share the bind mount\'s contents:
 
-It is not possible to modify the selinux label using the `--mount` flag.
-[1](https://docs.docker.com/engine/storage/bind-mounts/#configure-the-selinux-label)
-[2](https://github.com/containers/podman/issues/10779)
-[3](https://github.com/containers/podman-compose/issues/246)
-[4](https://unix.stackexchange.com/questions/651198/podman-volume-mounts-when-to-use-the-z-or-z-suffix)
+It is not possible to modify the selinux label using the `--mount` flag. [1](https://docs.docker.com/engine/storage/bind-mounts/#configure-the-selinux-label) [2](https://github.com/containers/podman/issues/10779) [3](https://github.com/containers/podman-compose/issues/246) [4](https://unix.stackexchange.com/questions/651198/podman-volume-mounts-when-to-use-the-z-or-z-suffix)
 
 ``` bash
 docker run -d \
@@ -111,9 +95,11 @@ vi /etc/docker/daemon.json
 
 Configure Docker Daemon:
 
-Edit the Docker daemon configuration file, typically located at /etc/docker/daemon.json. If this file does not exist, you can create it.
+Edit the Docker daemon configuration file, typically located at /etc/docker/daemon.json. 
+If this file does not exist, you can create it.
 
-You'll need to specify an alternative subnet for Docker to use for its bridge networks. For example, if you want to use 192.168.0.0/16 for Docker, you can add the following configuration:
+You'll need to specify an alternative subnet for Docker to use for its bridge networks. 
+For example, if you want to use 192.168.0.0/16 for Docker, you can add the following configuration:
 ```
 
 ``` json
@@ -125,13 +111,11 @@ You'll need to specify an alternative subnet for Docker to use for its bridge ne
 }
 ```
 
-  Option                                 Detail
-  -------------------------------------- --------------------------------------------------------
-  \--bip string                          Specify network bridge IP
-  \--default-address-pool pool-options   Default address pools for node specific local networks
-
-  : Options dockerd (Docker daemon) [External
-  Link](https://docs.docker.com/reference/cli/dockerd/#daemon-configuration-file)
+  **Options dockerd (Docker daemon)** [External Link](https://docs.docker.com/reference/cli/dockerd/#daemon-configuration-file)
+  |Option                                 | Detail                                                |
+  |---------------------------------------|-------------------------------------------------------|
+  |--bip string                           |Specify network bridge IP                              |
+  |--default-address-pool pool-options    |Default address pools for node specific local networks |
 
 ``` bash
 systemctl start docker
@@ -143,27 +127,17 @@ docker network inspect docker_default
 
 ### Change default networking {#change_default_networking_1}
 
-Container engines like Podman & Buildah read **containers.conf** file,
-if it exists and modify the defaults for running containers on the host.
-containers.conf uses a TOML format that can be easily modified and
-versioned.
+Container engines like Podman & Buildah read **containers.conf** file, if it exists and modify the defaults for running containers on the host. containers.conf uses a TOML format that can be easily modified and versioned.
 
-Container engines read the **/usr/share/containers/containers.conf**,
-**/etc/containers/containers.conf**, and
-**/etc/containers/containers.conf.d/\*.conf** for global configuration
-that effects all users.[\[External
-Source\]](https://github.com/containers/common/blob/main/docs/containers.conf.5.md)
-[5](https://docs.podman.io/en/latest/markdown/podman-network.1.html#podman-network)
-[6](https://github.com/containers/podman/blob/main/docs/tutorials/basic_networking.md)
+Container engines read the **/usr/share/containers/containers.conf**, **/etc/containers/containers.conf**, and **/etc/containers/containers.conf.d/\*.conf** for global configuration
+that effects all users.[\[External Source\]](https://github.com/containers/common/blob/main/docs/containers.conf.5.md) [5](https://docs.podman.io/en/latest/markdown/podman-network.1.html#podman-network) [6](https://github.com/containers/podman/blob/main/docs/tutorials/basic_networking.md)
 
-*Note, container engines also use other configuration files for
-configuring the environment.*
+*Note, container engines also use other configuration files for configuring the environment.*
 
 - storage.conf for configuration of container and images storage.
-- registries.conf for definition of container registries to search while
-  pulling. container images.
+- registries.conf for definition of container registries to search while pulling. container images.
 - policy.conf for controlling which images can be pulled to the system.
-
+```bash
 ip route show #check networks
 
 systemctl stop podman vi /usr/share/containers/containers.conf
@@ -183,8 +157,7 @@ given size. This is only used for ipv4 subnets, ipv6 subnets are always
 assigned randomly.
 
 The default list is (10.89.0.0-10.255.255.0/24):
-
-</syntaxhighlight>
+```
 
 ``` bash
 default_subnet_pools = [
