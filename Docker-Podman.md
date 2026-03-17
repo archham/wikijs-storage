@@ -1,3 +1,13 @@
+---
+title: Docker-Podman
+description: 
+published: true
+date: 2026-03-17T16:06:40.103Z
+tags: docker, podman, container
+editor: markdown
+dateCreated: 2026-03-16T13:50:36.723Z
+---
+
 ## Introduction
 
 Usefull info to Docker and Podman.
@@ -191,7 +201,3 @@ systemctl start podman
 podman network ls #verify settings
 podman network inspect podman
 ```
-
-[Category:Docker](Category:Docker "Category:Docker"){.wikilink}
-[Category:Podman](Category:Podman "Category:Podman"){.wikilink}
-[Category:Container](Category:Container "Category:Container"){.wikilink}
