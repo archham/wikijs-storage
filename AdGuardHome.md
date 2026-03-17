@@ -2,20 +2,17 @@
 title: AdGuardHome
 description: 
 published: true
-date: 2026-03-16T22:25:33.635Z
+date: 2026-03-17T16:56:56.908Z
 tags: dns, linux
 editor: markdown
 dateCreated: 2026-03-16T13:50:13.451Z
 ---
 
-AdGuard Home[^1][^2] is
-a way of keeping your browser experience pleasant and to protect you
-from unwanted trackers.
+AdGuard Home[^1][^2] is a way of keeping your browser experience pleasant and to protect you from unwanted trackers.
 
 ## Preparation
 
-This will be a Guide on how to run AdGuard Home on Rocky Linux 9 with
-selinux enabled.
+This will be a Guide on how to run AdGuard Home on Rocky Linux 9 with selinux enabled.
 
 1.  Setup a Rocky Linux 9 server
 2.  Install the software
@@ -69,5 +66,4 @@ tbd
 <references />
 
 [^1]: <https://github.com/AdguardTeam/AdguardHome>
-
 [^2]: <https://adguard.com/en/adguard-home/overview.html>
