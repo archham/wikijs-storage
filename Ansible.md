@@ -2,27 +2,22 @@
 title: Ansible
 description: 
 published: true
-date: 2026-03-16T22:22:50.618Z
+date: 2026-03-17T16:49:04.199Z
 tags: ansible
 editor: markdown
 dateCreated: 2026-03-16T13:50:18.538Z
 ---
 
-![Test](Ansible_logo.svg "Test") ANSIBLE - PLAYBOOK FOR LAMP HAPROXY
-
+ANSIBLE - PLAYBOOK FOR LAMP HAPROXY[^1]
 <https://www.bogotobogo.com/DevOps/Ansible/Ansible-Playbook-Lamp-HAProxy.php>
 
-In this tutorial, we\'re going to use one of Ansible\'s most complete
-example playbooks as a template: lamp_haproxy
-
+In this tutorial, we\'re going to use one of Ansible\'s most complete example playbooks as a template: lamp_haproxy
 <https://www.qnap.com/en/how-to/tutorial/article/how-to-use-reverse-proxy-to-improve-secure-remote-connections>
 
 Manage HAProxy / Nginx / Apache from Web Interface using Roxy-WI
-
 <https://computingforgeeks.com/manage-haproxy-nginx-apache-from-web-interface-using-roxy-wi/?expand_article=1>
 
 Ansible-navigator build your own execution enviroment!
-
 <https://www.dbi-services.com/blog/create-and-manage-ansible-execution-environments/>
 
 ## To be sorted {#to_be_sorted}
