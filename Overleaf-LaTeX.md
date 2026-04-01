@@ -2,7 +2,7 @@
 title: Overleaf-LaTeX
 description: 
 published: true
-date: 2026-04-01T14:37:42.931Z
+date: 2026-04-01T15:00:07.699Z
 tags: docker, latex
 editor: markdown
 dateCreated: 2026-03-16T13:51:51.795Z
@@ -33,13 +33,11 @@ sudo dnf install git
 adduser overleaf
 
 # Be sure that your designated user is part of the docker group
-## Check it when you are logged in
-groups
+## Give application user right for docker
+usermod -aG docker overleaf
 
-## If not add your current user
-usermod -aG docker $USER 
-## Or a different one
-usermod -aG docker <USERNAME>
+## Check it when you are logged in as overleaf - displays docker
+groups
 ```
 
 **<u>!Caution!</u>**
@@ -61,7 +59,10 @@ usermod -aG docker <USERNAME>
 ``` bash
 # Make a directory and cahnge the permissions
 sudo mkdir /opt/overleaf-toolkit
-sudo chown <USERNAME>.root /opt/overleaf-toolkit
+sudo chown overleaf:root /opt/overleaf-toolkit
+
+# change to application user
+su - overleaf
 
 # Download git repo to opt and cd into it
 git clone https://github.com/overleaf/toolkit.git /opt/overleaf-toolkit
@@ -78,6 +79,9 @@ vi config/overleaf.rc
 
 ## OVERLEAF_LISTEN_IP=127.0.0.1
 OVERLEAF_LISTEN_IP=<IP_OF_VM>
+
+## SIBLING_CONTAINERS_ENABLED=true
+SIBLING_CONTAINERS_ENABLED=false
 
 ----------------STOP------------------
 
