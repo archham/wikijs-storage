@@ -1,12 +1,18 @@
+---
+title: Overleaf-LaTeX
+description: 
+published: true
+date: 2026-04-01T13:56:55.558Z
+tags: docker, latex
+editor: markdown
+dateCreated: 2026-03-16T13:51:51.795Z
+---
+
 ### Introduction
 
-Overleaf is a Software with that you can edit LaTeX files in a browser.
-This is a Tutorial on how to setup a self-hosted Overleaf Community
-Edition server on Linux.
+Overleaf is a Software with that you can edit LaTeX files in a browser. This is a Tutorial on how to setup a self-hosted Overleaf Community Edition server on Linux.
 
-It is intended that you **run** this **server** **behind a reverse
-proxy**. It is **very** **important** to do so **if** **you** plan to
-**publish** the **application** **to the internet!**
+It is intended that you **run** this **server** **behind a reverse proxy**. It is **very** **important** to do so **if** **you** plan to **publish** the **application** **to the internet!**
 
 ### Preparation
 
@@ -33,25 +39,19 @@ usermod -aG docker $USER
 usermod -aG docker <USERNAME>
 ```
 
-**`<big>`{=html}`<u>`{=html}!Caution!`</u>`{=html}`</big>`{=html}**
+**<u>!Caution!</u>**
 
-*When using RHEL based os for the server it is recomended to deinstall
-Podman and install Docker CE. Podman was not tested.*
+*When using RHEL based os for the server it is recomended to deinstall Podman and install Docker CE. Podman was not tested.*
 
 ### Installation
 
 *Sources:
-[Official](https://github.com/overleaf/toolkit/blob/master/doc/quick-start-guide.md)
-[Additional
-Instructions](https://www.scaleway.com/en/docs/tutorials/overleaf/)*
-[Example
-Implementation](https://blog.felixviola.de/overleaf-ce-self-host-your-own-latex-server-tutorial/)
-[Completing Tex
-Live](https://github.com/overleaf/toolkit/blob/master/doc/ce-upgrading-texlive.md)
-[Ubuntu 20.04 TexLive
-full](https://docs.vultr.com/how-to-install-overleaf-community-edition-on-ubuntu-20-04-lts)
-[Old scheme
-full](https://github.com/overleaf/overleaf/wiki/Quick-Start-Guide)
+* [Official](https://github.com/overleaf/toolkit/blob/master/doc/quick-start-guide.md) 
+* [Additional Instructions](https://www.scaleway.com/en/docs/tutorials/overleaf/)* 
+* [Example Implementation](https://blog.felixviola.de/overleaf-ce-self-host-your-own-latex-server-tutorial/) 
+* [Completing Tex Live](https://github.com/overleaf/toolkit/blob/master/doc/ce-upgrading-texlive.md) 
+* [Ubuntu 20.04 TexLive full](https://docs.vultr.com/how-to-install-overleaf-community-edition-on-ubuntu-20-04-lts) 
+* [Old scheme full](https://github.com/overleaf/overleaf/wiki/Quick-Start-Guide)
 
 **Installation successfully tested on the 19.07.2024**
 
@@ -131,12 +131,9 @@ systemctl status overleaf.service
 
 #### Tex Live full install {#tex_live_full_install}
 
-By default Overleaf Community Edition installs LaTeX in a \"lite\"
-version. In order to use the full capabilities of Overleaf it is advised
-to fully install LaTex (all packages).
+By default Overleaf Community Edition installs LaTeX in a \"lite\" version. In order to use the full capabilities of Overleaf it is advised to fully install LaTex (all packages).
 
-> *Remember, that once you update the image used for Overleaf you need
-> to redo this step. Each time. That\'s CE Version for you :)*
+> *Remember, that once you update the image used for Overleaf you need to redo this step. Each time. That\'s CE Version for you :)*
 
 ``` bash
 # Change in to working directory
@@ -180,5 +177,3 @@ systemctl start overleaf.service
 
 ## Source: https://github.com/overleaf/toolkit/blob/master/doc/upgrading.md
 ```
-
-[Category:LaTeX](Category:LaTeX "Category:LaTeX"){.wikilink}
