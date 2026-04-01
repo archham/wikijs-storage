@@ -2,7 +2,7 @@
 title: Overleaf-LaTeX
 description: 
 published: true
-date: 2026-04-01T13:56:55.558Z
+date: 2026-04-01T14:06:22.366Z
 tags: docker, latex
 editor: markdown
 dateCreated: 2026-03-16T13:51:51.795Z
@@ -63,11 +63,6 @@ sudo chown <USERNAME>.root /opt/overleaf-toolkit
 # Download git repo to opt and cd into it
 git clone https://github.com/overleaf/toolkit.git /opt/overleaf-toolkit
 cd /opt/overleaf-toolkit
-
-# ATTENTION: Bug Alert! 19.07.2024
-## https://github.com/overleaf/toolkit/issues/272
-## Current workaround befor you initialize the project
-git checkout 2bc0c9d71bb8e1ab94456b89e0dd7cef7810f4bd
 
 # initialize the project
 ./bin/init
