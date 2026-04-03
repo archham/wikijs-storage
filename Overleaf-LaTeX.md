@@ -2,7 +2,7 @@
 title: Overleaf-LaTeX
 description: 
 published: true
-date: 2026-04-03T09:23:12.985Z
+date: 2026-04-03T09:31:39.919Z
 tags: docker, latex
 editor: markdown
 dateCreated: 2026-03-16T13:51:51.795Z
@@ -63,6 +63,11 @@ sudo chown overleaf:root /opt/overleaf-toolkit
 
 # change to application user
 su - overleaf
+
+## (OPTIONAL) set alias for easier access
+echo "# alias for working dir" >> .bashrc
+echo "alias cda='cd /opt/overleaf-toolkit/'" >> .bashrc
+source .bashrc
 
 # Download git repo to opt and cd into it
 git clone https://github.com/overleaf/toolkit.git /opt/overleaf-toolkit
