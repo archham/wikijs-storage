@@ -2,7 +2,7 @@
 title: Overleaf-LaTeX
 description: 
 published: true
-date: 2026-04-03T09:31:39.919Z
+date: 2026-04-03T09:37:45.336Z
 tags: docker, latex
 editor: markdown
 dateCreated: 2026-03-16T13:51:51.795Z
@@ -87,6 +87,9 @@ OVERLEAF_LISTEN_IP=<IP_OF_VM>
 
 ## SIBLING_CONTAINERS_ENABLED=true
 SIBLING_CONTAINERS_ENABLED=false
+
+# Needed if logs should be written to the host
+OVERLEAF_LOG_PATH=logs
 
 ----------------STOP------------------
 ## Note: we recommend that you re-create the docker containers after changing anything in `overleaf.rc` or `variables.env`, by running `bin/docker-compose down`, followed by `bin/up`
