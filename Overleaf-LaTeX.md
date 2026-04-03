@@ -2,7 +2,7 @@
 title: Overleaf-LaTeX
 description: 
 published: true
-date: 2026-04-03T09:12:14.257Z
+date: 2026-04-03T09:23:12.985Z
 tags: docker, latex
 editor: markdown
 dateCreated: 2026-03-16T13:51:51.795Z
@@ -84,6 +84,7 @@ OVERLEAF_LISTEN_IP=<IP_OF_VM>
 SIBLING_CONTAINERS_ENABLED=false
 
 ----------------STOP------------------
+## Note: we recommend that you re-create the docker containers after changing anything in `overleaf.rc` or `variables.env`, by running `bin/docker-compose down`, followed by `bin/up`
 
 # Add the http service to the local firewall
 sudo firewall-cmd --add-service=http --permanent
@@ -164,6 +165,25 @@ tlmgr path add
 # Exit container shell
 exit
 ```
+**OPTIONAL** - Saving your changes
+The changes you've just made have changed the `sharelatex` container, but they are ephemeral --- they will be lost if Compose recreates the container, e.g. as part of updating the config.
+
+To make them persistent, use `docker commit` to save the changes to a new docker image:
+
+```
+$ cat config/version
+5.0.3
+#^^^^ --------------- matching version ----------- |
+#                                                vvvvv
+$ docker commit sharelatex sharelatex/sharelatex:5.0.3-with-texlive-full
+
+$ echo 5.0.3-with-texlive-full > config/version
+```
+
+After committing the changes, update the `config/version` accordingly. Then run `bin/up`, to recreate the container.
+
+Note that you will need to repeat these steps when you upgrade (``./upgrading.md``).
+
 
 ### Update
 
