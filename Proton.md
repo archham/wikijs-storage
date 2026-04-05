@@ -2,7 +2,7 @@
 title: Proton
 description: Infos about Proton.me services
 published: true
-date: 2026-04-05T14:32:07.502Z
+date: 2026-04-05T14:34:49.134Z
 tags: docker, proton, mail
 editor: markdown
 dateCreated: 2026-04-05T08:42:00.076Z
@@ -92,3 +92,15 @@ Security:  STARTTLS
 ```
 Start the bridge
 ``docker compose up -d``
+
+### Testing
+```bash
+echo "Test body" | mailx \
+  -s "Test subject" \
+  -S smtp=smtp://127.0.0.1:1025 \
+  -S smtp-auth=login \
+  -S smtp-auth-user="bridge-username" \
+  -S smtp-auth-password="bridge-password" \
+  -r sender@example.com \
+  # recipient@example.com
+```
