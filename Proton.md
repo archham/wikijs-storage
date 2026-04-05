@@ -2,7 +2,7 @@
 title: Proton
 description: Infos about Proton.me services
 published: true
-date: 2026-04-05T09:31:38.500Z
+date: 2026-04-05T09:37:09.224Z
 tags: docker, proton, mail
 editor: markdown
 dateCreated: 2026-04-05T08:42:00.076Z
@@ -71,4 +71,22 @@ Account archham was added successfully.
 >>> A sync has begun for <YOUR_USER>.
 Sync (<YOUR_USER>): 1.8% (Elapsed: 0.5s, ETA: 26.3s)
 ...
+A sync has finished for <YOUR_USER>.
+```
+Run ``ìnfo`` to get IMAP/SMTP credentials for your application.
+```bash
+Configuration for <YOUR_MAIL>
+IMAP Settings
+Address:   127.0.0.1
+IMAP port: 1143
+Username:  <YOUR_MAIL>
+Password:  generated_pw
+Security:  STARTTLS
+
+SMTP Settings
+Address:   127.0.0.1
+SMTP port: 1025
+Username:  <YOUR_MAIL>
+Password:  generated_pw
+Security:  STARTTLS
 ```
