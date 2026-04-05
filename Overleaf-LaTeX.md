@@ -2,7 +2,7 @@
 title: Overleaf-LaTeX
 description: 
 published: true
-date: 2026-04-05T16:17:01.029Z
+date: 2026-04-05T16:23:36.130Z
 tags: docker, latex
 editor: markdown
 dateCreated: 2026-03-16T13:51:51.795Z
