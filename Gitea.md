@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T15:33:16.736Z
+date: 2026-04-09T15:35:38.338Z
 tags: linux, gitea, git, selinux, security
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -401,35 +401,30 @@ grep gitea_var_lib_t gitea*
 sed -i 's/gitea_var_lib_t/gitea_data_t/g' gitea*
 ```
 - Hide permissive setting, we want to use it in enforcing mode
-
-`sed -i 's/^permissive/#permissive/' gitea.te`
-
+```bash
+sed -i 's/^permissive/#permissive/' gitea.te
+```
 - Add file context rule
+```bash
+echo '/etc/gitea(/.*)?                gen_context(system_u:object_r:gitea_conf_t,s0)' >> gitea.fc
+```
+- Edit gitea.te
+```bash
+# add in declaration
+type gitea_conf_t;
+files_type(gitea_conf_t)
 
-`echo '/etc/gitea(/.*)?                gen_context(system_u:object_r:gitea_conf_t,s0)' >> gitea.fc`
-
-- `vim gitea.te`
-
-<!-- -->
-
-    # add in declaration
-    type gitea_conf_t;
-    files_type(gitea_conf_t)
-
-    type gitea_port_t;
-    corenet_port(gitea_port_t)
-
+type gitea_port_t;
+corenet_port(gitea_port_t)
+```
 - disable rpm building cmd
-
-`sed -i 's/^rpmbuild/#rpmbuild/' gitea.sh`
-
+```bash
+sed -i 's/^rpmbuild/#rpmbuild/' gitea.sh
+```
 - build and load new rules
-
-`bash gitea.sh`
-
-[index.php?title=Category:Linux](index.php?title=Category:Linux "index.php?title=Category:Linux"){.wikilink}
-[index.php?title=Category:SELinux](index.php?title=Category:SELinux "index.php?title=Category:SELinux"){.wikilink}
-[index.php?title=Category:Security](index.php?title=Category:Security "index.php?title=Category:Security"){.wikilink}
+```bash
+bash gitea.sh
+```
 
 ## Apply new context lables
 
