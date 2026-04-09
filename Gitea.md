@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T11:47:29.094Z
+date: 2026-04-09T11:50:07.029Z
 tags: linux, gitea, git
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -198,8 +198,8 @@ firewall-cmd --permanent --add-forward-port=port=22:proto=tcp:toport=2222
 firewall-cmd --reload
 ```
 ## Install/Configure Mariadb
-
-- install and enable
+```bash
+# install and enable
 
 `dnf install -y mariadb-server`\
 `systemctl enable --now mariadb`
@@ -220,7 +220,7 @@ firewall-cmd --reload
     GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'localhost';
     FLUSH PRIVILEGES;
     EOF
-
+```
 ## Install Gitea
 
 - create gitea user
