@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T15:28:41.066Z
+date: 2026-04-09T15:33:16.736Z
 tags: linux, gitea, git, selinux, security
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -317,91 +317,89 @@ openssl req -x509 -newkey rsa:4096 -nodes \
   -out /etc/pki/tls/certs/gitea.crt \
   -days 3650 -subj "/CN=$HOST"
 ```
-`chown root:root /etc/pki/tls/private/gitea.key`\
-`chmod 600 /etc/pki/tls/private/gitea.key`
+```bash
+chown root:root /etc/pki/tls/private/gitea.key
+chmod 600 /etc/pki/tls/private/gitea.key
 
-`openssl dhparam -out /etc/nginx/dhparam.pem 4096`
+openssl dhparam -out /etc/nginx/dhparam.pem 4096
+```
+```bash
+cat <<EOF >/etc/nginx/conf.d/gitea.conf
+server {
+    listen 443 ssl;
+    server_name $HOST;
 
-    cat <<EOF >/etc/nginx/conf.d/gitea.conf
-    server {
-        listen 443 ssl;
-        server_name $HOST;
+    ssl_certificate /etc/pki/tls/certs/gitea.crt;
+    ssl_certificate_key /etc/pki/tls/private/gitea.key;
+    ssl_dhparam /etc/nginx/dhparam.pem;
+    ssl_protocols TLSv1.2;
+    add_header Strict-Transport-Security "max-age=31536000;
+    includeSubDomains; preload" always;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
+    ssl_prefer_server_ciphers on;
 
-        ssl_certificate /etc/pki/tls/certs/gitea.crt;
-        ssl_certificate_key /etc/pki/tls/private/gitea.key;
-        ssl_dhparam /etc/nginx/dhparam.pem;
-        ssl_protocols TLSv1.2;
-        add_header Strict-Transport-Security "max-age=31536000; 
-        includeSubDomains; preload" always;
-        ssl_stapling on;
-        ssl_stapling_verify on;
-        ssl_session_cache shared:SSL:10m;
-        ssl_session_timeout 10m;
-        ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
-        ssl_prefer_server_ciphers on;
-
-        location / {
-            proxy_pass http://127.0.0.1:3000;
-            proxy_set_header Host \$host;
-            proxy_set_header X-Real-IP \$remote_addr;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$scheme;
-        }
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
     }
-    EOF
-
-`systemctl enable --now nginx`
-
+}
+EOF
+```
+```bash
+systemctl enable --now nginx
+```
 ## create gitea application admin
+Change to git user, which has no sell as default:
+```bash
+su -s /bin/bash git
 
-Change to git user, which has no sell as default
+genpasswd() {
+  local l=$1
+  [ "$l" == "" ] && l=20
+  tr -dc A-Za-z0-9_ < /dev/urandom | head -c ${l} | xargs
+}
 
-`su -s /bin/bash git`
+ADMIN_USER=$(genpasswd 8)
+ADMIN_PW=$(genpasswd)
 
-    genpasswd() {
-      local l=$1
-            [ "$l" == "" ] && l=20
-            tr -dc A-Za-z0-9_ < /dev/urandom | head -c ${l} | xargs
-     }
-
-    ADMIN_USER=$(genpasswd 8)
-    ADMIN_PW=$(genpasswd)
-
-    echo ADMIN_USER=$ADMIN_USER
-    echo ADMIN_PW=$ADMIN_PW
-    gitea admin user create --admin --username $ADMIN_USER --password "$ADMIN_PW" --email admin@domain.tld --config /etc/gitea/app.ini
-    exit
-
+echo ADMIN_USER=$ADMIN_USER
+echo ADMIN_PW=$ADMIN_PW
+gitea admin user create --admin --username $ADMIN_USER --password "$ADMIN_PW" --email admin@domain.tld --config /etc/gitea/app.ini
+exit
+```
 # SELinux configuration
-
 ## Install selinux tools as root
+```bash
+dnf install -y policycoreutils-devel checkpolicy setroubleshoot-server setools-console
+> /var/log/audit/audit.log
+touch /.autorelabel
+reboot
+ssh -lroot $HOST -p222
 
-`dnf install -y policycoreutils-devel checkpolicy setroubleshoot-server setools-console`\
-`> /var/log/audit/audit.log`\
-`touch /.autorelabel`\
-`reboot`\
-`ssh -lroot $HOST -p222`
-
-`mkdir -p /root/selinux/gitea`\
-`cd /root/selinux/gitea`
-
-[index.php?title=Category:Linux](index.php?title=Category:Linux "index.php?title=Category:Linux"){.wikilink}
-[index.php?title=Category:SELinux](index.php?title=Category:SELinux "index.php?title=Category:SELinux"){.wikilink}
-[index.php?title=Category:Security](index.php?title=Category:Security "index.php?title=Category:Security"){.wikilink}
+mkdir -p /root/selinux/gitea
+cd /root/selinux/gitea
+```
 
 ## Generate policy default ruleset
-
-`for r in appstream baseos extras ; do dnf config-manager --set-disabled $r; done`\
-`sepolicy generate --init /usr/local/bin/gitea`\
-`for r in appstream baseos extras ; do dnf config-manager --set-enabled $r; done`
-
+```bash
+for r in appstream baseos extras ; do dnf config-manager --set-disabled $r; done
+sepolicy generate --init /usr/local/bin/gitea
+for r in appstream baseos extras ; do dnf config-manager --set-enabled $r; done
+```
 ## Modify ruleset defaults
 
 Rename gitea_var_lib_t
-
-`grep gitea_var_lib_t gitea*`\
-`sed -i 's/gitea_var_lib_t/gitea_data_t/g' gitea*`
-
+```bash
+grep gitea_var_lib_t gitea*
+sed -i 's/gitea_var_lib_t/gitea_data_t/g' gitea*
+```
 - Hide permissive setting, we want to use it in enforcing mode
 
 `sed -i 's/^permissive/#permissive/' gitea.te`
