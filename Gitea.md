@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T15:53:43.779Z
+date: 2026-04-09T15:56:52.857Z
 tags: linux, ansible, gitea, git, selinux, security
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -12,147 +12,6 @@ The instructions bellow are sourced 100% from [bitbull.ch - Gitea Setup on Rocky
 
 Sourced: 09.04.2026
 
-# My Notes
-
-> **Write down!**
-> - MySQL
-> Root PW DB=\*\*\*\*
-> MARIADB_PW=\*\*\*\*
-> - Gitea
-> ADMIN_USER=\*\*\*\*
-> ADMIN_PW=\*\*\*\*
-
-SQL secure installation
-
-``` bash
-genpasswd #used for SQL root account
-mysql_secure_installation
-enter
-n
-y
-# insert generated pw from before
-y
-y
-y
-y
-```
-
-Changed Gitea Version
-``` bash
-GITEA_VERSION=1.25.5
-```
-
-Own changes made to ``app.ini`` file
-```ini
-# Moved vars to top
-APP_NAME
-RUN_USER
-RUN_MODE
-
-# Added vars to [security]
-REVERSE_PROXY_LIMIT
-REVERSE_PROXY_TRUSTED_PROXIES
-
-# Added [mailer] [migrations] [log] [picture] categories
-```
-```ini
-    cat <<EOF >/etc/gitea/app.ini
-    APP_NAME = Gitea: Git with a cup of tea
-    RUN_USER = git
-    RUN_MODE = prod
-    WORK_PATH = /var/lib/gitea/
-
-    [server]
-    HTTP_PORT = 3000
-    ROOT_URL = https://$HOST
-    SSH_DOMAIN = $HOST
-    START_SSH_SERVER = true
-    SSH_PORT         = 22
-    SSH_LISTEN_PORT  = 2222
-    OFFLINE_MODE = false
-    DOMAIN = $HOST
-
-    [database]
-    DB_TYPE = mysql
-    HOST = 127.0.0.1:3306
-    NAME = gitea
-    USER = gitea
-    PASSWD = $MARIADB_PW
-    SSL_MODE = disable
-
-    [security]
-    INSTALL_LOCK = true
-    SECRET_KEY = $(genpasswd 32)
-    INTERNAL_TOKEN = $(genpasswd 32)
-    REVERSE_PROXY_LIMIT = 1
-    REVERSE_PROXY_TRUSTED_PROXIES = *
-
-    [lfs]
-    PATH = /var/lib/gitea/data/lfs
-
-    [service]
-    DISABLE_REGISTRATION = true
-
-    [oauth2]
-    JWT_SECRET = $(genpasswd 32)
-
-    [mailer]
-    ENABLED = true
-    PROTOCOL = smtp
-    SMTP_ADDR = gitea.my.domain
-    FROM = gitea@my.domain
-    USER =
-    PASSWD =
-
-    [migrations]
-    ALLOWED_DOMAINS = $HOST, github.com, *.github.com
-
-    [log]
-    MODE = file
-    MAX_DAYS = 32
-
-    [picture]
-    AVATAR_MAX_FILE_SIZE = 2097152
-
-
-    EOF
-```
-Own changes made to nginx configuration ``gitea.conf`` file
-```bash
-# Added defined upload size limit
-client_max_body_size 50M;  # <– increase upload limit
-```
-```bash
-    cat <<EOF >/etc/nginx/conf.d/gitea.conf
-    server {
-        listen 443 ssl;
-        server_name $HOST;
-
-        client_max_body_size 50M;
-
-        ssl_certificate /etc/pki/tls/certs/gitea.crt;
-        ssl_certificate_key /etc/pki/tls/private/gitea.key;
-        ssl_dhparam /etc/nginx/dhparam.pem;
-        ssl_protocols TLSv1.2;
-        add_header Strict-Transport-Security "max-age=31536000; 
-        includeSubDomains; preload" always;
-        ssl_stapling on;
-        ssl_stapling_verify on;
-        ssl_session_cache shared:SSL:10m;
-        ssl_session_timeout 10m;
-        ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
-        ssl_prefer_server_ciphers on;
-
-        location / {
-            proxy_pass http://127.0.0.1:3000;
-            proxy_set_header Host \$host;
-            proxy_set_header X-Real-IP \$remote_addr;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$scheme;
-        }
-    }
-    EOF
-```
 # Setup
 - OS: Rocky Linux 10 minimal
 - FQDN: gitea01.domain.tld
@@ -755,8 +614,149 @@ sesearch -b domain_can_mmap_files -A
 # allow domain file_type:file map; [ domain_can_mmap_files ]:True
 # allow domain file_type:lnk_file map; [ domain_can_mmap_files ]:True
 ```
+# Own changes and additions
+## My Notes
 
-# Update
+> **Write down!**
+> - MySQL
+> Root PW DB=\*\*\*\*
+> MARIADB_PW=\*\*\*\*
+> - Gitea
+> ADMIN_USER=\*\*\*\*
+> ADMIN_PW=\*\*\*\*
+
+SQL secure installation
+
+``` bash
+genpasswd #used for SQL root account
+mysql_secure_installation
+enter
+n
+y
+# insert generated pw from before
+y
+y
+y
+y
+```
+
+Changed Gitea Version
+``` bash
+GITEA_VERSION=1.25.5
+```
+
+Own changes made to ``app.ini`` file
+```ini
+# Moved vars to top
+APP_NAME
+RUN_USER
+RUN_MODE
+
+# Added vars to [security]
+REVERSE_PROXY_LIMIT
+REVERSE_PROXY_TRUSTED_PROXIES
+
+# Added [mailer] [migrations] [log] [picture] categories
+```
+```ini
+    cat <<EOF >/etc/gitea/app.ini
+    APP_NAME = Gitea: Git with a cup of tea
+    RUN_USER = git
+    RUN_MODE = prod
+    WORK_PATH = /var/lib/gitea/
+
+    [server]
+    HTTP_PORT = 3000
+    ROOT_URL = https://$HOST
+    SSH_DOMAIN = $HOST
+    START_SSH_SERVER = true
+    SSH_PORT         = 22
+    SSH_LISTEN_PORT  = 2222
+    OFFLINE_MODE = false
+    DOMAIN = $HOST
+
+    [database]
+    DB_TYPE = mysql
+    HOST = 127.0.0.1:3306
+    NAME = gitea
+    USER = gitea
+    PASSWD = $MARIADB_PW
+    SSL_MODE = disable
+
+    [security]
+    INSTALL_LOCK = true
+    SECRET_KEY = $(genpasswd 32)
+    INTERNAL_TOKEN = $(genpasswd 32)
+    REVERSE_PROXY_LIMIT = 1
+    REVERSE_PROXY_TRUSTED_PROXIES = *
+
+    [lfs]
+    PATH = /var/lib/gitea/data/lfs
+
+    [service]
+    DISABLE_REGISTRATION = true
+
+    [oauth2]
+    JWT_SECRET = $(genpasswd 32)
+
+    [mailer]
+    ENABLED = true
+    PROTOCOL = smtp
+    SMTP_ADDR = gitea.my.domain
+    FROM = gitea@my.domain
+    USER =
+    PASSWD =
+
+    [migrations]
+    ALLOWED_DOMAINS = $HOST, github.com, *.github.com
+
+    [log]
+    MODE = file
+    MAX_DAYS = 32
+
+    [picture]
+    AVATAR_MAX_FILE_SIZE = 2097152
+
+
+    EOF
+```
+Own changes made to nginx configuration ``gitea.conf`` file
+```bash
+# Added defined upload size limit
+client_max_body_size 50M;  # <– increase upload limit
+```
+```bash
+    cat <<EOF >/etc/nginx/conf.d/gitea.conf
+    server {
+        listen 443 ssl;
+        server_name $HOST;
+
+        client_max_body_size 50M;
+
+        ssl_certificate /etc/pki/tls/certs/gitea.crt;
+        ssl_certificate_key /etc/pki/tls/private/gitea.key;
+        ssl_dhparam /etc/nginx/dhparam.pem;
+        ssl_protocols TLSv1.2;
+        add_header Strict-Transport-Security "max-age=31536000; 
+        includeSubDomains; preload" always;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+        ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
+        ssl_prefer_server_ciphers on;
+
+        location / {
+            proxy_pass http://127.0.0.1:3000;
+            proxy_set_header Host \$host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+        }
+    }
+    EOF
+```
+## Update
 Update process with ansible. Uses mechanic to either choose a specific version or auto chooses the latest stable version.
 
 Choose `auto` or a specific desired version to start the playbook:
