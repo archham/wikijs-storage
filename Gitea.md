@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T11:44:11.074Z
+date: 2026-04-09T11:47:29.094Z
 tags: linux, gitea, git
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -187,23 +187,16 @@ sed -i 's/^#Port 22/Port 222/' /etc/ssh/sshd_config
 systemctl restart sshd
 ```
 ## Configure Firewall
-
-- open https
-
-`firewall-cmd --permanent --add-port=443/tcp`
-
-- open new sshd port
-
-`firewall-cmd --permanent --add-port=222/tcp`
-
-- forward port 22 to gitea
-
-`firewall-cmd --permanent --add-forward-port=port=22:proto=tcp:toport=2222`
-
-- load new rules
-
-`firewall-cmd --reload`
-
+```bash
+# open https
+firewall-cmd --permanent --add-port=443/tcp
+# open new sshd port
+firewall-cmd --permanent --add-port=222/tcp
+# forward port 22 to gitea
+firewall-cmd --permanent --add-forward-port=port=22:proto=tcp:toport=2222
+# load new rules
+firewall-cmd --reload
+```
 ## Install/Configure Mariadb
 
 - install and enable
