@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T15:40:12.837Z
+date: 2026-04-09T15:43:59.571Z
 tags: linux, gitea, git, selinux, security
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -522,269 +522,236 @@ ss -tan # port 2222 and 3000 are NOW listening!
 ```
 
 # Appendix
-
 ## Final policy files
 
-</pre>
-<div class="toccolours mw-collapsible mw-collapsed" style="width:60%">
+`gitea.fc`
+```bash
+# Set the security context for the Gitea executable
+/usr/local/bin/gitea    --  gen_context(system_u:object_r:gitea_exec_t,s0)
+# Set the security context for Gitea data directories
+/var/lib/gitea(/.*)?    gen_context(system_u:object_r:gitea_data_t,s0)
+# Set the security context for Gitea configuration files
+/etc/gitea(/.*)?    gen_context(system_u:object_r:gitea_conf_t,s0)
+```
 
-File: `<b>`{=html}gitea.fc`</b>`{=html} Modified: `<b>`{=html}2025-07-12
-12:41:42`</b>`{=html}
-
-<div class="mw-collapsible-content">
-
-    # Set the security context for the Gitea executable
-    /usr/local/bin/gitea        --  gen_context(system_u:object_r:gitea_exec_t,s0)
-    # Set the security context for Gitea data directories
-    /var/lib/gitea(/.*)?        gen_context(system_u:object_r:gitea_data_t,s0)
-    # Set the security context for Gitea configuration files
-    /etc/gitea(/.*)?        gen_context(system_u:object_r:gitea_conf_t,s0)
-
-</div>
-</div>
-<div class="toccolours mw-collapsible mw-collapsed" style="width:60%">
-
-File: `<b>`{=html}gitea.if`</b>`{=html} Modified: `<b>`{=html}2025-07-12
-12:43:07`</b>`{=html}
-
-<div class="mw-collapsible-content">
-
-    # Interface to allow domain transition to gitea_t when executing gitea_exec_t
-    interface(`gitea_domtrans',`
-        gen_require(`
-            type gitea_t, gitea_exec_t;
-        ')
-
-        corecmd_search_bin($1)
-        domtrans_pattern($1, gitea_exec_t, gitea_t)
+`gitea.if`
+```bash
+# Interface to allow domain transition to gitea_t when executing gitea_exec_t
+interface(`gitea_domtrans',`
+    gen_require(`
+        type gitea_t, gitea_exec_t;
     ')
 
-    # Interface to allow execution of gitea_exec_t in the caller's domain
-    interface(`gitea_exec',`
-        gen_require(`
-            type gitea_exec_t;
-        ')
+    corecmd_search_bin($1)
+    domtrans_pattern($1, gitea_exec_t, gitea_t)
+')
 
-        corecmd_search_bin($1)
-        can_exec($1, gitea_exec_t)
+# Interface to allow execution of gitea_exec_t in the caller's domain
+interface(`gitea_exec',`
+    gen_require(`
+        type gitea_exec_t;
     ')
 
-    # Interface to allow searching of Gitea library directories
-    interface(`gitea_search_lib',`
-        gen_require(`
-            type gitea_data_t;
-        ')
+    corecmd_search_bin($1)
+    can_exec($1, gitea_exec_t)
+')
 
-        allow $1 gitea_data_t:dir search_dir_perms;
-        files_search_var_lib($1)
+# Interface to allow searching of Gitea library directories
+interface(`gitea_search_lib',`
+    gen_require(`
+        type gitea_data_t;
     ')
 
-    # Interface to allow reading of Gitea library files
-    interface(`gitea_read_lib_files',`
-        gen_require(`
-            type gitea_data_t;
-        ')
+    allow $1 gitea_data_t:dir search_dir_perms;
+    files_search_var_lib($1)
+')
 
-        files_search_var_lib($1)
-        read_files_pattern($1, gitea_data_t, gitea_data_t)
+# Interface to allow reading of Gitea library files
+interface(`gitea_read_lib_files',`
+    gen_require(`
+        type gitea_data_t;
     ')
 
-    # Interface to allow management of Gitea library files
-    interface(`gitea_manage_lib_files',`
-        gen_require(`
-            type gitea_data_t;
-        ')
+    files_search_var_lib($1)
+    read_files_pattern($1, gitea_data_t, gitea_data_t)
+')
 
-        files_search_var_lib($1)
-        manage_files_pattern($1, gitea_data_t, gitea_data_t)
+# Interface to allow management of Gitea library files
+interface(`gitea_manage_lib_files',`
+    gen_require(`
+        type gitea_data_t;
     ')
 
-    # Interface to allow management of Gitea library directories
-    interface(`gitea_manage_lib_dirs',`
-        gen_require(`
-            type gitea_data_t;
-        ')
+    files_search_var_lib($1)
+    manage_files_pattern($1, gitea_data_t, gitea_data_t)
+')
 
-        files_search_var_lib($1)
-        manage_dirs_pattern($1, gitea_data_t, gitea_data_t)
+# Interface to allow management of Gitea library directories
+interface(`gitea_manage_lib_dirs',`
+    gen_require(`
+        type gitea_data_t;
     ')
 
+    files_search_var_lib($1)
+    manage_dirs_pattern($1, gitea_data_t, gitea_data_t)
+')
 
-    # Interface to allow administration of a Gitea environment
-    interface(`gitea_admin',`
-        gen_require(`
-            type gitea_t;
-            type gitea_data_t;
-        ')
 
-        allow $1 gitea_t:process { signal_perms };
-        ps_process_pattern($1, gitea_t)
-
-        tunable_policy(`deny_ptrace',`',`
-            allow $1 gitea_t:process ptrace;
-        ')
-
-        files_search_var_lib($1)
-        admin_pattern($1, gitea_data_t)
-        optional_policy(`
-            systemd_passwd_agent_exec($1)
-            systemd_read_fifo_file_passwd_run($1)
-        ')
+# Interface to allow administration of a Gitea environment
+interface(`gitea_admin',`
+    gen_require(`
+        type gitea_t;
+        type gitea_data_t;
     ')
 
-</div>
-</div>
-<div class="toccolours mw-collapsible mw-collapsed" style="width:60%">
+    allow $1 gitea_t:process { signal_perms };
+    ps_process_pattern($1, gitea_t)
 
-File: `<b>`{=html}gitea.te`</b>`{=html} Modified: `<b>`{=html}2025-07-12
-12:44:36`</b>`{=html}
+    tunable_policy(`deny_ptrace',`',`
+        allow $1 gitea_t:process ptrace;
+    ')
 
-<div class="mw-collapsible-content">
+    files_search_var_lib($1)
+    admin_pattern($1, gitea_data_t)
+    optional_policy(`
+        systemd_passwd_agent_exec($1)
+        systemd_read_fifo_file_passwd_run($1)
+    ')
+')
+```
 
-    # Define the Gitea SELinux policy module version
-    policy_module(gitea, 1.0.0)
+`gitea.te`
+```bash
+# Define the Gitea SELinux policy module version
+policy_module(gitea, 1.0.0)
 
-    ########################################
-    # Required types and classes for Gitea SELinux policy
-    require {
-      type gitea_t;
-      type gitea_data_t;
-      type gitea_port_t;                      
-      type gitea_conf_t;                               
-      class dir search;
-      class process setpgid;
-      class file { getattr map open read execute execute_no_trans};
-      class tcp_socket { accept bind listen name_bind name_connect connect create getattr getopt setopt read write};
-      class udp_socket { connect create getattr setopt };
-      type tmp_t;
-      type httpd_t;
-    } 
+########################################
+# Required types and classes for Gitea SELinux policy
+require {
+  type gitea_t;
+  type gitea_data_t;
+  type gitea_port_t;
+  type gitea_conf_t;
+  class dir search;
+  class process setpgid;
+  class file { getattr map open read execute execute_no_trans};
+  class tcp_socket { accept bind listen name_bind name_connect connect create getattr getopt setopt read write};
+  class udp_socket { connect create getattr setopt };
+  type tmp_t;
+  type httpd_t;
+}
 
-    type gitea_t;
-    type gitea_exec_t;
-    # Initialize the Gitea daemon domain
-    init_daemon_domain(gitea_t, gitea_exec_t)
+type gitea_t;
+type gitea_exec_t;
+# Initialize the Gitea daemon domain
+init_daemon_domain(gitea_t, gitea_exec_t)
 
-    # permissive gitea_t;
+# permissive gitea_t;
 
-    type gitea_data_t;
-    files_type(gitea_data_t)
+type gitea_data_t;
+files_type(gitea_data_t)
 
-    type gitea_conf_t;
-    files_type(gitea_conf_t)
+type gitea_conf_t;
+files_type(gitea_conf_t)
 
-    type gitea_port_t;
-    corenet_port(gitea_port_t)
+type gitea_port_t;
+corenet_port(gitea_port_t)
 
-    ########################################
-    # gitea policy definitions #############
-    # Allow Gitea to read and write to its own FIFO files
-    allow gitea_t self:fifo_file rw_fifo_file_perms;
-    # Allow Gitea to create and use Unix stream sockets
-    allow gitea_t self:unix_stream_socket create_stream_socket_perms;
+########################################
+# gitea policy definitions #############
+# Allow Gitea to read and write to its own FIFO files
+allow gitea_t self:fifo_file rw_fifo_file_perms;
+# Allow Gitea to create and use Unix stream sockets
+allow gitea_t self:unix_stream_socket create_stream_socket_perms;
 
-    # Allow Gitea to search its configuration directory
-    allow gitea_t gitea_conf_t:dir search;             
-    # Allow Gitea to get attributes, open, and read its configuration files
-    allow gitea_t gitea_conf_t:file { getattr open read };
+# Allow Gitea to search its configuration directory
+allow gitea_t gitea_conf_t:dir search;
+# Allow Gitea to get attributes, open, and read its configuration files
+allow gitea_t gitea_conf_t:file { getattr open read };
 
-    # Allow HTTPD to connect to Gitea's TCP socket
-    allow httpd_t gitea_port_t:tcp_socket name_connect;
+# Allow HTTPD to connect to Gitea's TCP socket
+allow httpd_t gitea_port_t:tcp_socket name_connect;
 
-    # Allow Gitea to manage its data directories
-    manage_dirs_pattern(gitea_t, gitea_data_t, gitea_data_t)
-    # Allow Gitea to manage its data files
-    manage_files_pattern(gitea_t, gitea_data_t, gitea_data_t)
-    # Allow Gitea to manage its symbolic link files
-    manage_lnk_files_pattern(gitea_t, gitea_data_t, gitea_data_t)
-    # Allow file transitions for Gitea in /var/lib
-    files_var_lib_filetrans(gitea_t, gitea_data_t, { dir file lnk_file })
+# Allow Gitea to manage its data directories
+manage_dirs_pattern(gitea_t, gitea_data_t, gitea_data_t)
+# Allow Gitea to manage its data files
+manage_files_pattern(gitea_t, gitea_data_t, gitea_data_t)
+# Allow Gitea to manage its symbolic link files
+manage_lnk_files_pattern(gitea_t, gitea_data_t, gitea_data_t)
+# Allow file transitions for Gitea in /var/lib
+files_var_lib_filetrans(gitea_t, gitea_data_t, { dir file lnk_file })
 
-    # Allow Gitea to use interactive file descriptors
-    domain_use_interactive_fds(gitea_t)
+# Allow Gitea to use interactive file descriptors
+domain_use_interactive_fds(gitea_t)
 
-    # Allow Gitea to read files in /etc
-    files_read_etc_files(gitea_t)
+# Allow Gitea to read files in /etc
+files_read_etc_files(gitea_t)
 
-    # Allow Gitea to read localization files
-    miscfiles_read_localization(gitea_t)
+# Allow Gitea to read localization files
+miscfiles_read_localization(gitea_t)
 
-    # Define file transition patterns for Gitea
-    filetrans_pattern(gitea_t, gitea_data_t, gitea_data_t, file);
-    filetrans_pattern(gitea_t, gitea_data_t, gitea_data_t, dir);
-    filetrans_pattern(gitea_t, tmp_t, gitea_data_t, { file dir });
+# Define file transition patterns for Gitea
+filetrans_pattern(gitea_t, gitea_data_t, gitea_data_t, file);
+filetrans_pattern(gitea_t, gitea_data_t, gitea_data_t, dir);
+filetrans_pattern(gitea_t, tmp_t, gitea_data_t, { file dir });
 
-    # Allow Gitea to map its data files
-    allow gitea_t gitea_data_t:file map;
-    # Allow Gitea to bind to its TCP socket
-    allow gitea_t gitea_port_t:tcp_socket name_bind;
-    # Allow Gitea to set process group ID
-    allow gitea_t self:process setpgid;
-    # Allow Gitea to perform operations on its TCP socket
-    allow gitea_t self:tcp_socket { accept bind listen read write};
-    # Allow Gitea to read the password file
-    auth_read_passwd_file(gitea_t)
-    # Allow Gitea to execute shell commands
-    corecmd_check_exec_shell(gitea_t)
-    # Allow Gitea to execute binaries
-    corecmd_exec_bin(gitea_t)
-    # Allow Gitea to bind to generic TCP nodes
-    corenet_tcp_bind_generic_node(gitea_t)
-    # Allow Gitea to read from sysfs
-    dev_read_sysfs(gitea_t)
-    # Allow Gitea to read network sysctl settings
-    kernel_read_net_sysctls(gitea_t)
-    # Allow Gitea to search network sysctl settings
-    kernel_search_network_sysctl(gitea_t)
+# Allow Gitea to map its data files
+allow gitea_t gitea_data_t:file map;
+# Allow Gitea to bind to its TCP socket
+allow gitea_t gitea_port_t:tcp_socket name_bind;
+# Allow Gitea to set process group ID
+allow gitea_t self:process setpgid;
+# Allow Gitea to perform operations on its TCP socket
+allow gitea_t self:tcp_socket { accept bind listen read write};
+# Allow Gitea to read the password file
+auth_read_passwd_file(gitea_t)
+# Allow Gitea to execute shell commands
+corecmd_check_exec_shell(gitea_t)
+# Allow Gitea to execute binaries
+corecmd_exec_bin(gitea_t)
+# Allow Gitea to bind to generic TCP nodes
+corenet_tcp_bind_generic_node(gitea_t)
+# Allow Gitea to read from sysfs
+dev_read_sysfs(gitea_t)
+# Allow Gitea to read network sysctl settings
+kernel_read_net_sysctls(gitea_t)
+# Allow Gitea to search network sysctl settings
+kernel_search_network_sysctl(gitea_t)
 
-    # Allow Gitea to execute its own executable without transition
-    allow gitea_t gitea_exec_t:file execute_no_trans;
-    # Allow Gitea to execute its data files
-    allow gitea_t gitea_data_t:file execute;
-    # Allow Gitea to execute its data files without transition
-    allow gitea_t gitea_data_t:file execute_no_trans;
-    # Allow Gitea to connect to its TCP socket
-    allow gitea_t gitea_port_t:tcp_socket name_connect;  
-    # Allow Gitea to perform various operations on its TCP socket
-    allow gitea_t self:tcp_socket { connect create getattr getopt setopt };
-    # Allow Gitea to perform various operations on its UDP socket
-    allow gitea_t self:udp_socket { connect create getattr setopt };
-    # Allow Gitea to connect to HTTP ports
-    corenet_tcp_connect_http_port(gitea_t);
-    # Allow Gitea to connect to MySQL ports
-    corenet_tcp_connect_mysqld_port(gitea_t)
-    # Allow Gitea to read generic certificates
-    miscfiles_read_generic_certs(gitea_t);
-    # Allow Gitea to read system network configuration
-    sysnet_read_config(gitea_t);
-
-</div>
-</div>
-
+# Allow Gitea to execute its own executable without transition
+allow gitea_t gitea_exec_t:file execute_no_trans;
+# Allow Gitea to execute its data files
+allow gitea_t gitea_data_t:file execute;
+# Allow Gitea to execute its data files without transition
+allow gitea_t gitea_data_t:file execute_no_trans;
+# Allow Gitea to connect to its TCP socket
+allow gitea_t gitea_port_t:tcp_socket name_connect;
+# Allow Gitea to perform various operations on its TCP socket
+allow gitea_t self:tcp_socket { connect create getattr getopt setopt };
+# Allow Gitea to perform various operations on its UDP socket
+allow gitea_t self:udp_socket { connect create getattr setopt };
+# Allow Gitea to connect to HTTP ports
+corenet_tcp_connect_http_port(gitea_t);
+# Allow Gitea to connect to MySQL ports
+corenet_tcp_connect_mysqld_port(gitea_t)
+# Allow Gitea to read generic certificates
+miscfiles_read_generic_certs(gitea_t);
+# Allow Gitea to read system network configuration
+sysnet_read_config(gitea_t);
+```
 ## Boolean Analysis: domain_can_mmap_files
 
 - Lets see what domain_can_mmap_files contains
+```bash
+getsebool -a | grep domain_can_mmap_files
+# domain_can_mmap_files --> off
 
-<!-- -->
+semanage boolean -l | grep domain_can_mmap_files
+# domain_can_mmap_files          (off  ,  off)  Allow any process to mmap any file on system with attribute file_type.
 
-    getsebool -a | grep domain_can_mmap_files
-      domain_can_mmap_files --> off
-
-
-    semanage boolean -l | grep domain_can_mmap_files
-       domain_can_mmap_files          (off  ,  off)  Allow any process to mmap any file on system with attribute file_type.
-
-    sesearch -b domain_can_mmap_files -A
-       allow domain file_type:blk_file map; [ domain_can_mmap_files ]:True
-       allow domain file_type:chr_file map; [ domain_can_mmap_files ]:True
-       allow domain file_type:file map; [ domain_can_mmap_files ]:True
-       allow domain file_type:lnk_file map; [ domain_can_mmap_files ]:True
-
-[index.php?title=Category:Linux](index.php?title=Category:Linux "index.php?title=Category:Linux"){.wikilink}
-[index.php?title=Category:SELinux](index.php?title=Category:SELinux "index.php?title=Category:SELinux"){.wikilink}
-[index.php?title=Category:Security](index.php?title=Category:Security "index.php?title=Category:Security"){.wikilink}
-[index.php?title=Category:Linux](index.php?title=Category:Linux "index.php?title=Category:Linux"){.wikilink}
-[index.php?title=Category:SELinux](index.php?title=Category:SELinux "index.php?title=Category:SELinux"){.wikilink}
-[index.php?title=Category:Security](index.php?title=Category:Security "index.php?title=Category:Security"){.wikilink}
-[index.php?title=Category:Gita](index.php?title=Category:Gita "index.php?title=Category:Gita"){.wikilink}
-[index.php?title=Category:Git](index.php?title=Category:Git "index.php?title=Category:Git"){.wikilink}
+sesearch -b domain_can_mmap_files -A
+# allow domain file_type:blk_file map; [ domain_can_mmap_files ]:True
+# allow domain file_type:chr_file map; [ domain_can_mmap_files ]:True
+# allow domain file_type:file map; [ domain_can_mmap_files ]:True
+# allow domain file_type:lnk_file map; [ domain_can_mmap_files ]:True
+```
