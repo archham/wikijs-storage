@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T11:50:07.029Z
+date: 2026-04-09T11:52:48.584Z
 tags: linux, gitea, git
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -200,26 +200,21 @@ firewall-cmd --reload
 ## Install/Configure Mariadb
 ```bash
 # install and enable
+dnf install -y mariadb-server
+systemctl enable --now mariadb
 
-`dnf install -y mariadb-server`\
-`systemctl enable --now mariadb`
+# secure mariadb
+mysql_secure_installation
 
-- secure mariadb
-
-`mysql_secure_installation`
-
-- create gitea database user
-
-<!-- -->
-
-    MARIADB_PW=$(genpasswd)
-    echo MARIADB_PW=$MARIADB_PW
-    mysql -u root -p <<EOF
-    CREATE DATABASE gitea CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
-    CREATE USER 'gitea'@'localhost' IDENTIFIED BY '$MARIADB_PW';
-    GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'localhost';
-    FLUSH PRIVILEGES;
-    EOF
+# create gitea database user
+MARIADB_PW=$(genpasswd)
+echo MARIADB_PW=$MARIADB_PW
+mysql -u root -p <<EOF
+CREATE DATABASE gitea CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+CREATE USER 'gitea'@'localhost' IDENTIFIED BY '$MARIADB_PW';
+GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'localhost';
+FLUSH PRIVILEGES;
+EOF
 ```
 ## Install Gitea
 
