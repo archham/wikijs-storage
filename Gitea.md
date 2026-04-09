@@ -2,17 +2,13 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T11:35:19.779Z
-tags: 
+date: 2026-04-09T11:38:18.023Z
+tags: linux, gitea, git
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
 ---
 
-The instructions bellow are sourced 100% from [bitbull.ch - Gitea Setup
-on Rocky10 with
-SELinux](https://wiki.bitbull.ch/en/gitea)
-and are here for archival purposes only. All credit to him :-) Visit his
-site and enjoy the massive knowledge base!
+The instructions bellow are sourced 100% from [bitbull.ch - Gitea Setup on Rocky10 with SELinux](https://wiki.bitbull.ch/en/gitea) and are here for archival purposes only. All credit to him :-) Visit his site and enjoy the massive knowledge base!
 
 Sourced: 17.10.2025
 
@@ -123,18 +119,12 @@ REVERSE_PROXY_TRUSTED_PROXIES
     EOF
 ```
 Own changes made to nginx configuration ``gitea.conf`` file **2025-11-19**
+```bash
+# Added defined upload size limit
 
-<div class="toccolours mw-collapsible mw-collapsed" style="width:60%">
-
-File: `<b>`{=html}gitea.conf`</b>`{=html} Modified:
-`<b>`{=html}2025-11-19 17:20:00`</b>`{=html}
-
-<div class="mw-collapsible-content">
-
-\# Added defined upload size limit
-
-`  client_max_body_size 50M;  # <– increase upload limit`
-
+`  client_max_body_size 50M;  # <– increase upload limit`
+```
+```bash
     cat <<EOF >/etc/nginx/conf.d/gitea.conf
     server {
         listen 443 ssl;
@@ -164,10 +154,7 @@ File: `<b>`{=html}gitea.conf`</b>`{=html} Modified:
         }
     }
     EOF
-
-</div>
-</div>
-
+```
 # Setup
 
 - OS: Rocky Linux 10 minimal
