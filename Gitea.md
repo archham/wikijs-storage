@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T12:52:45.195Z
+date: 2026-04-09T15:28:41.066Z
 tags: linux, gitea, git, selinux, security
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -39,10 +39,10 @@ y
 
 Changed Gitea Version
 ``` bash
-GITEA_VERSION=1.24.6
+GITEA_VERSION=1.25.5
 ```
 
-Own changes made to app.ini file ``app.ini`` **2025-11-15**
+Own changes made to ``app.ini`` file
 ```ini
 # Moved vars to top
 APP_NAME
@@ -55,7 +55,6 @@ REVERSE_PROXY_TRUSTED_PROXIES
 
 # Added [mailer] [migrations] [log] [picture] categories
 ```
-
 ```ini
     cat <<EOF >/etc/gitea/app.ini
     APP_NAME = Gitea: Git with a cup of tea
@@ -118,7 +117,7 @@ REVERSE_PROXY_TRUSTED_PROXIES
 
     EOF
 ```
-Own changes made to nginx configuration ``gitea.conf`` file **2025-11-19**
+Own changes made to nginx configuration ``gitea.conf`` file
 ```bash
 # Added defined upload size limit
 client_max_body_size 50M;  # <– increase upload limit
@@ -187,14 +186,20 @@ sed -i 's/^#Port 22/Port 222/' /etc/ssh/sshd_config
 systemctl restart sshd
 ```
 ## Configure Firewall
+- open https
 ```bash
-# open https
 firewall-cmd --permanent --add-port=443/tcp
-# open new sshd port
+```
+- open new sshd port
+```bash
 firewall-cmd --permanent --add-port=222/tcp
-# forward port 22 to gitea
+```
+- forward port 22 to gitea
+```bash
 firewall-cmd --permanent --add-forward-port=port=22:proto=tcp:toport=2222
-# load new rules
+```
+- load new rules
+```bash
 firewall-cmd --reload
 ```
 ## Install/Configure Mariadb
