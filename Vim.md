@@ -2,7 +2,7 @@
 title: Vim
 description: 
 published: true
-date: 2026-04-14T21:22:03.912Z
+date: 2026-04-14T21:24:54.039Z
 tags: linux, vim
 editor: markdown
 dateCreated: 2026-03-16T13:52:34.098Z
@@ -11,7 +11,7 @@ dateCreated: 2026-03-16T13:52:34.098Z
 Vim cheat sheet [1](https://vim.rtorr.com/)
 **Vim Cheat Sheet**
 | Command           | Description                                               |
-| ----------------- | --------------------------------------------------------- |
+| :----: | --------------------------------------------------------- |
 | `u`               | undo                                                      |
 | `Ctrl`+`r`        | redo                                                      |
 | `12Ctrl`+`r`      | redo to 12 steps before                                   |
