@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-08-10T13:43:42.613Z
+date: 2026-08-10T13:44:28.517Z
 tags: linux, ansible, gitea, git, selinux, security
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -647,7 +647,7 @@ GITEA_VERSION=1.25.5
 
 Own changes to firewalld
 ``` bash
-# open http
+# open http for redirect to https
 firewall-cmd --permanent --add-port=80/tcp
 firewall-cmd --reload
 ```
