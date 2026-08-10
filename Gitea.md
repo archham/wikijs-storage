@@ -2,7 +2,7 @@
 title: Gitea
 description: 
 published: true
-date: 2026-04-09T15:56:52.857Z
+date: 2026-08-10T13:43:42.613Z
 tags: linux, ansible, gitea, git, selinux, security
 editor: markdown
 dateCreated: 2026-03-16T13:50:51.959Z
@@ -645,6 +645,13 @@ Changed Gitea Version
 GITEA_VERSION=1.25.5
 ```
 
+Own changes to firewalld
+``` bash
+# open http
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --reload
+```
+
 Own changes made to ``app.ini`` file
 ```ini
 # Moved vars to top
@@ -724,9 +731,17 @@ Own changes made to nginx configuration ``gitea.conf`` file
 ```bash
 # Added defined upload size limit
 client_max_body_size 50M;  # <– increase upload limit
+# Added http redirect section
+server { listen 80; # etc.
 ```
 ```bash
     cat <<EOF >/etc/nginx/conf.d/gitea.conf
+    server {
+    listen 80;
+    server_name $HOST;
+ 
+    return 301 https://\$host\$request_uri;
+    }
     server {
         listen 443 ssl;
         server_name $HOST;
